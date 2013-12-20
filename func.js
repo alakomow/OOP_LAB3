@@ -42,8 +42,65 @@ function Rectangle(x,y,w,h)
         }else if (func_name=="print") {
             return "\nRectangle x = "+x+" y="+y+" w="+w+" h="+h+"\n";
         }else{
-            return Shape(x,y);
+            return Shape(x,y)(func_name,args);
         }
+    }
+}
+function Box(x,y,s)
+{
+    return function(func_name,args){
+        if (func_name=="getS") {
+            return s;
+        }else if (func_name=="setS") {
+            return Box(x,y,args[0]);
+        }else if (func_name== "setX") {
+            return Box(args[0],y,s);
+        }else if (func_name=="setY") {
+            return Box(x,args[0],s);
+        }else if (func_name=="move") {
+            return Box(x+args[0],y+args[0],s);
+        }else if (func_name=="print") {
+            return "Box x="+x+" y="+y+" s="+s;
+        }else{
+            return Rectangle(x,y,s,s)(func_name,args);
+        }
+    }
+}
+
+
+function Cyrcle(x,y,r)
+{
+    return function(func_name,args){
+        if (func_name=="getR") {
+            return s;
+        }else if (func_name=="setR") {
+            return Cyrcle(x,y,args[0]);
+        }else if (func_name== "setX") {
+            return Cyrcle(args[0],y,r);
+        }else if (func_name=="setY") {
+            return Cyrcle(x,args[0],r);
+        }else if (func_name=="move") {
+            return Cyrcle(x+args[0],y+args[0],r);
+        }else if (func_name=="print") {
+            return "Cyrcle x="+x+" y="+y+" r="+r;
+        }else{
+            return Shape(x,y)(func_name,args);
+        }
+    }
+}
+
+
+function Composite(X,Y,shapes)
+{
+    return function(func_name,args)
+    {
+        if (func_name=="add") {
+          return  Composite(x,y,shapes.push(args[0]));
+        }else if (func_name=="move") {
+            return Composite(x+args[0],y+args[1],shapes.forEach(function(item){ return item(func_name,[args[0],args[1]]); }));
+        }else if (func_name=="print") {
+            return "Composite:\n"+shapes.forEach(function(item){item(func_name);});
+        };
     }
 }
 
@@ -55,8 +112,8 @@ function testData(){
 	try {
 		document.write("<pre>");
         w("Start");
-       var shape = Rectangle(1,2,3,4);
-        w(shape("print"));
+       var shape = Composite(1,2,4);
+        w(shape);
        
 
 	} catch (e) {
